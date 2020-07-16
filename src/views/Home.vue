@@ -9,19 +9,22 @@
           <div class="bloky__inner">
             <form class="bloky__form"> 
               <div class="bloky__form__group">
-                  <div class="bloky__form__controls">
-                    <input type="email"
-                      placeholder="Email" 
-                      name="email"
-                      id="email"
-                      v-model="email"
-                      />
-                      <!-- <small v-show="errors.has('email')" class="field-text is-danger">Please enter a valid email.</small> -->
+                  <ValidationProvider name="email" rules="required|email" v-slot="{ errors }">
+                    <input v-model="email"
+                          placeholder="Email"
+                          name="email"
+                          type="text"
+                          >
+                    <span>{{ errors[0] }}</span>
+                  </ValidationProvider>
                   </div>
-              </div>
               <div class="bloky__form__group">
                   <div class="bloky__form__controls">
-                      <input type="number" placeholder="Phone Number" name="phone"/>
+                   
+
+                    <VuePhoneNumberInput v-model="yourValue" />
+
+
                   </div>
               </div>
               <div class="bloky__form__group">
@@ -89,7 +92,7 @@
               <h3 class="blocky__title blocky__title--summary">Total <strong class="blocky__copy__summary">{{total_summary}}</strong></h3>                
             </div>
             <div class="blocky__inner">
-              <button type="submit" class="btn btn__orange">Continue to payment</button>
+              <button type="submit" v-on:click="firstStep()" class="btn btn__orange">Continue to payment</button>
             </div>
           </div>
         </div>
@@ -99,17 +102,29 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
+import Vue from 'vue';
+import { ValidationProvider, extend } from 'vee-validate';
+import { required, email, } from 'vee-validate/dist/rules';
+import VuePhoneNumberInput from 'vue-phone-number-input';
+import 'vue-phone-number-input/dist/vue-phone-number-input.css';
+extend('email', email);
+extend('required', {
+  ...required,
+});
+Vue.component('ValidationProvider', ValidationProvider);
+Vue.component('vue-phone-number-input', VuePhoneNumberInput);
 
 export default {
   name: 'Home',
   components: {
-    // HelloWorld
+    ValidationProvider,
+    VuePhoneNumberInput
   },
   data: function () {
     return {
-      email           : "",
+      yourValue: '',
+      phone: '',
+      email           : '',
       checked         : '',
       maxcharacter    : 120,
       totalcharacter  : 0,
@@ -117,12 +132,16 @@ export default {
       fee_summary     : '5,900',
       total_summary   : '505,900',
       delivery_addres : '',
+      first_formdata  :[],
     }
   },
   methods: {
     charCount : function(){
       this.totalcharacter = this.maxcharacter - this.delivery_addres.length
     },
+    firstStep : function(){
+    },
+    
   }
 }
 </script>

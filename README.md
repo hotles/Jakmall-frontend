@@ -27,3 +27,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ### package install
 1.vue add router
 2.floating form
+3.npm install --save vue-step-progress
