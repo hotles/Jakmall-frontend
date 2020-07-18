@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <br><br>
-      <router-link to="/">Home</router-link> |
+      <!-- <router-link to="/"></router-link> | -->
       <!-- <router-link to="/payment">Payment</router-link> -->
     </div>
     <router-view/>
@@ -22,3 +22,4 @@ export default {
   }
 }
 </script>
+

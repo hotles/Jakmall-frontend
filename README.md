@@ -1,4 +1,7 @@
 # jakmall-fe-hotles
+```
+Test Frontend Hotles Purba
+```
 
 ## Project setup
 ```
@@ -24,7 +27,9 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 
-### package install
-1.vue add router
-2.floating form
-3.npm install --save vue-step-progress
+### follow this step to install
+
+1. clone this project with copy https://github.com/hotles/Jakmall-frontend.git  to you git bash
+2. npm install 
+3. npm run serve
+

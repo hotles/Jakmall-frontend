@@ -2,9 +2,9 @@
   <div class="root">
      <div class="container__progress">
           <ul class="progressbar">
-            <li class="step__1">Step 1</li>
-            <li>Step 2</li>
-            <li class="step__3">Step 3</li>
+            <li class="step__1">Delivery</li>
+            <li>Payment</li>
+            <li class="step__3">Finish</li>
           </ul>
       </div>
   </div>
