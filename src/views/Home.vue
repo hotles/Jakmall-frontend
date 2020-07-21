@@ -1,7 +1,23 @@
 <template>
   <div class="home">
-    <div class="container">
-      <section v-if="step === 1">
+    <!-- <div class="container__progress"> -->
+      
+    <div class="title__steprogress">
+      <div class="text__progress"><p class="title__progress">Delivery</p></div>
+      <div class="text__progress"><p class="title__progress title__progress--payment">Payment</p></div>
+      <div class="text__progress"><p class="title__progress title__progress--finish">Finish</p></div>
+      </div>
+    <!-- </div> -->
+  <div class="container">
+      <div>
+        <div class="container__progress">
+          <ul class="progressbar">
+              <step-progress :steps="['','','']" :current-step="stepno" icon-class="fa fa-check"></step-progress>
+          </ul>
+        </div>
+      </div>
+
+      <section v-if="step1 === true">
         <ValidationObserver ref="observer" tag="form" @submit.prevent="submit">
           <div class="blocky-wrapper">
             <div class="blocky">
@@ -22,7 +38,7 @@
                   </div>
                   <div class="bloky__form__group">
                       <div class="bloky__form__controls">
-                        <ValidationProvider name="Phone" rules="required" v-slot="{ errors }">
+                        <ValidationProvider name="Phone" rules="required|min:6|max:20" v-slot="{ errors }">
                           <VuePhoneNumberInput 
                             v-model="formdata.yourValue"
                             name="Phone"
@@ -71,7 +87,7 @@
                   </div>
                   <div class="bloky__form__group">
                       <div class="bloky__form__controls">
-                        <validation-provider name="Dropshipper phone number" rules="required" v-slot="{ errors }">
+                        <validation-provider name="Dropshipper phone number" rules="required|min:6|max:20" v-slot="{ errors }">
                           <VuePhoneNumberInput 
                             v-model="formdata.yourValue2" 
                             default-country-code="ID" 
@@ -92,7 +108,6 @@
                   </div>
                   <div class="bloky__form__group">
                       <div class="bloky__form__controls">
-                          <!-- <input type="number" placeholder="Dropshipper phone number" name="phone" disabled /> -->
                           <VuePhoneNumberInput disabled/>
                       </div>
                   </div>
@@ -121,8 +136,8 @@
         </ValidationObserver>
       </section>
 
-      <section v-if="step === 2">
-        <ValidationObserver ref="observer" tag="form" @submit.prevent="submit">
+      <section v-if="step2 === true">
+        <ValidationObserver ref="observer" tag="form" @submit.prevent="validateForm">
           <div class="payment">
             <div class="container">
               <div class="blocky-wrapper">
@@ -141,23 +156,23 @@
                       </div>
                       <div class="bloky__form__group">
                           <div class="bloky__form__controls" id="radioCustom">
-                            <ValidationProvider name="Check payment" rules="required" v-slot="{ errors }">
-                                <input class="checkbox-tools" value="gosend" type="radio" @click="pickedcustom1" v-model="picked1" name="Check payment" id="radiosend1">
+                            <ValidationProvider name="myform" rules="required" v-slot="{ errors }">
+                                <input class="checkbox-tools" value="gosend" type="radio" @click="pickedcustom1" v-model="picked" name="Checkpayment" id="radiosend1">
                                 <label class="for-checkbox-tools" for="radiosend1">
                                   <p class="p__send">GO-SEND</p>
                                   <p class="p__send--pay">{{pay_go_send}}</p>
                                 </label>
-                                <input class="checkbox-tools" value="jne" type="radio" @click="pickedcustom2" v-model="picked2" name="Check payment" id="radiosend2">
+                                <input class="checkbox-tools" value="jne" type="radio" @click="pickedcustom2" v-model="picked" name="Checkpayment" id="radiosend2">
                                 <label class="for-checkbox-tools" for="radiosend2">
                                   <p class="p__send">JNE</p>
                                   <p class="p__send--pay">{{pay_jne}}</p>
                                 </label>
-                                <input class="checkbox-tools" value="courir" @click="pickedcustom3" v-model="picked3" type="radio" name="Check payment" id="radiosend3">
+                                <input class="checkbox-tools" value="courir" @click="pickedcustom3" v-model="picked" type="radio" name="Checkpayment" id="radiosend3">
                                 <label class="for-checkbox-tools" for="radiosend3">
                                   <p class="p__send">Personal Courier</p>
                                   <p class="p__send--pay">{{pay_courier}}</p>
-                                </label>
-                                <span>{{ errors[0] }}</span>
+                                </label><br>
+                                <small v-if="errors">{{ errors[0] }}</small>
                             </ValidationProvider>
                           </div>
                       </div>
@@ -166,17 +181,17 @@
                       </div>
                       <div class="bloky__form__group">
                           <div class="bloky__form__controls" id="radioCustom1">
-                              <input class="checkbox-tools" value="e_wallet" type="radio" v-model="picked.e_wallet" name="tools1" id="radiopay1">
+                              <input class="checkbox-tools" value="e_wallet" type="radio" @click="btnewalet" v-model="pay_name" name="tools1" id="radiopay1">
                               <label class="for-checkbox-tools" for="radiopay1">
                                 <p class="p__send">e-Wallet</p>
                                 <p class="p__send--pay"></p>
                               </label>
-                              <input class="checkbox-tools" value="bank_transfer" type="radio" v-model="picked.bank_name" name="tools1" id="radiopay2">
+                              <input class="checkbox-tools" value="bank_transfer" @click="btnbank" type="radio" v-model="pay_name" name="tools1" id="radiopay2">
                               <label class="for-checkbox-tools" for="radiopay2">
                                 <p class="p__send">Bank Transfer</p>
                                 <p class="p__send--pay"></p>
                               </label>
-                              <input class="checkbox-tools" value="virtual_account" v-model="picked.virtual_number" type="radio" name="tools1" id="radiopay3">
+                              <input class="checkbox-tools" value="virtual_account" @click="btnvirtual" v-model="pay_name" type="radio" name="tools1" id="radiopay3">
                               <label class="for-checkbox-tools" for="radiopay3">
                                 <p class="p__send">Virtual Account</p>
                                 <p class="p__send--pay"></p>
@@ -189,22 +204,19 @@
 
                 <div class="blocky__checkbox">
                   <div class="blocky__inner blocky__inner--checkbox">
-                    
                   </div>
-                  <div class="bloky__inner">
+                  <!-- <div class="bloky__inner">
                     <form class="bloky__form"> 
                       <div class="bloky__form__group">
                           <div class="bloky__form__controls bloky__form__controls--dropshipper">
-                              <!-- <input type="text" placeholder="Dropshipper name" name="dropship_name" disabled/> -->
                           </div>
                       </div>
                       <div class="bloky__form__group">
                           <div class="bloky__form__controls">
-                              <!-- <input type="number" placeholder="Dropshipper phone number" name="phone" disabled/> -->
                           </div>
                       </div>
                     </form>
-                  </div>
+                  </div> -->
                 </div>
 
                 <div class="blocky__summary">
@@ -217,7 +229,6 @@
                     <p v-if="picked1" class="text__success">today by GO-SEND</p>
                     <p v-if="picked2" class="text__success">JNE: 2 days</p>
                     <p v-if="picked3" class="text__success">Personal Courier: 1 day</p>
-
                     <p v-else></p>
                   </div>
                   <div class="blocky__inner blocky__inner--payment">
@@ -227,18 +238,62 @@
                       <h3 class="blocky__title blocky__title--summary">Total <strong class="blocky__copy__summary">{{total_summary}}</strong></h3>                
                     </div>
                     <div class="blocky__inner">
-                      <button type="submit" class="btn btn__orange">Continue to payment</button>
+                      <button type="submit" class="btn btn__info" v-if="btn1">Payment with E-walet</button>
+                      <button type="submit" class="btn btn__primary" v-else-if="btn2">Payment with Bank Transfer</button>
+                      <button type="submit" class="btn btn__danger" v-else-if="btn3">Payment with Virtual Account</button>
+                      <button type="submit" class="btn btn__dark" v-else @click="showwarn()">Default</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          </ValidationObserver>
+        </ValidationObserver> 
       </section>
+      
+      <section v-if="step3 === true">
+        <ValidationObserver ref="observer" tag="form" @submit.prevent="submit">
+          <div class="blocky-wrapper">
+            <div class="blocky">
+              <div class="bloky__inner">
+                <form class="bloky__form bloky__form--thank"> 
+                  <div class="blocky__inner">
+                    <h1 class="blocky__title blocky__title--hr">Thank you</h1>
+                    <p><strong> ID: xxxx </strong></p>
+                    <p>Your order will be delivered today with
+                      <span v-if="picked1" class="text__success">GO-SEND</span>
+                      <span v-if="picked2" class="text__success">JNE</span>
+                      <span v-if="picked3" class="text__success">Courier</span>
+                    </p>
+                    <div class="back__home">
+                      <a href="" @click="goBackhome()" class="back">&larr; Back to homepage</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
 
-      <section v-if="step === 3">
-        <h1>Success</h1>
+            <div class="blocky__checkbox">
+              <div class="blocky__inner blocky__inner--checkbox">
+               
+              </div>             
+            </div>
+
+            <div class="blocky__summary">
+              <div class="blocky__inner">
+                <h3 class="blocky__title blocky__title--summary">Summary</h3>
+                <small>10 items purchased</small>
+              </div>
+              <div class="blocky__inner blocky__inner--payment">
+                <div class="blocky__inner--summary">
+                  <p class="blocky__copy">Cost of goodss <strong class="blocky__copy__summary">{{cost_summary}}</strong></p>                
+                  <p class="blocky__copy">Dropshipping Fee <strong class="blocky__copy__summary">{{fee_summary}}</strong></p>
+                  <h3 class="blocky__title blocky__title--summary">Total <strong class="blocky__copy__summary blocky__copy__summary--total">{{this.total_summary = this.cost_summary + this.fee_summary}}</strong></h3>                
+                </div>
+              </div>
+            </div>
+          </div>
+        </ValidationObserver>
       </section>
     </div>
   </div>
@@ -250,17 +305,24 @@ import VuePhoneNumberInput from 'vue-phone-number-input';
 import 'vue-phone-number-input/dist/vue-phone-number-input.css';
 Vue.component('vue-phone-number-input', VuePhoneNumberInput);
 
-
+import StepProgress from 'vue-step-progress';
+import '../css/main.css';
 export default {
   name: 'Home',
   components: {
-    VuePhoneNumberInput
+    VuePhoneNumberInput,
+    StepProgress
+
   },
   data: function () {
     return {
-      step: 1,
-      totalstep: 3,
-      formdata: {},
+      step1           : true,
+      step2           : false,
+      step3           : false,
+      mySteps         : [],  
+      stepno          : 1,
+      totalstep       : 3,
+      formdata        : {},
       checked         : '',
       maxcharacter    : 120,
       totalcharacter  : 0,
@@ -268,14 +330,15 @@ export default {
       fee_summary     : 5900,
       total_summary   : '',
       delivery_addres : '',
+      picked          : '',
       picked1         : false,
       picked2         : false,
       picked3         : false,
-      picked: {
-        e_wallet      : '',
-        bank_name     : '',
-        virtual_number: ''
-      },
+      btn0            : false,
+      btn1            : false,
+      btn2            : false,
+      btn3            : false,
+      pay_name        : '',
       pay_go_send     : '15,000',
       pay_jne         : '9,000',
       pay_courier     : '29,000',
@@ -285,27 +348,79 @@ export default {
     charCount : function(){
       this.totalcharacter = this.maxcharacter - this.formdata.delivery_addres.length
     },
-    async submit() {
+    // async submit() {
+    //   const valid = await this.$refs.observer.validate();
+    //   if (valid) {
+    //     this.savePreferDate();
+    //     console.log("Form is valid");
+    //   } else {
+    //     // this.$swal.fire({
+    //     //   icon: "error",
+    //     //   title: "Sorry",
+    //     //   text: "Please select Send as dropshipper"
+    //     // });
+    //     console.log("Form is invalid");
+    //   }
+    // },
+    async submit(){
       const valid = await this.$refs.observer.validate();
       if (valid) {
         this.savePreferDate();
         console.log("Form is valid");
-      } else {
-        // this.$swal.fire({
-        //   icon: "error",
-        //   title: "Sorry",
-        //   text: "Please select Send as dropshipper"
-        // });
-        console.log("Form is invalid");
-      }
+        } else {
+          console.log("Form is invalid");
+        }
     },
     savePreferDate(){
-      this.step++;
+      // this.stepno++;
+      this.step2 = true;
+      this.step1 = false;
+      this.step3 = false;
+      this.stepno = 2;
     },
-
+    showwarn(){
+        this.$swal.fire({
+        icon: "warning",
+        title: "Sorry",
+        text: " aw aw aw!!! please select your payment"
+      });
+    },
+    //  validateForm() {
+    //   const check = this.$refs.observer.validate();
+    //   if (check == true) {
+    //     this.savePreferCustom();
+    //     console.log("Form is valid");
+    //   } else {
+    //     // this.$swal.fire({
+    //     //   icon: "error",
+    //     //   title: "Sorry",
+    //     //   text: "Please select Send as dropshipper"
+    //     // });
+    //     console.log("Form is invalid");
+    //   }
+    // },
+    async validateForm() {
+      const valids = await this.$refs.observer.validate();
+        if (valids) {
+          this.savePreferCustom();
+          console.log("Form is valid");
+          } else {
+            console.log("Form is invalid");
+          }
+    },
+    savePreferCustom(){
+      // this.stepno++;
+      this.step2 = false;
+      this.step1 = false;
+      this.step3 = true;
+      this.stepno = 3;
+    },
     goBack: function(){
       window.history.back();
-      this.step--;
+      this.stepno--;
+    },
+    goBackhome(){
+      window.location.href = '/';
     },
     pickedcustom1: function(){
       this.picked1  = true;
@@ -322,15 +437,70 @@ export default {
       this.picked2  = false;
       this.picked3  = true;
     },
-
+    btnewalet(){
+      this.btn1 = true;
+      this.btn2 = false;
+      this.btn3 = false;
+    },
+    btnbank(){
+      this.btn1 = false;
+      this.btn2 = true;
+      this.btn3 = false;
+    },
+    btnvirtual(){
+      this.btn1 = false;
+      this.btn2 = false;
+      this.btn3 = true;
+    }
   }
 }
 </script>
 <style scoped>
-
 /* ❤  */
+@media screen and (min-width: 979px){
+  .title__steprogress{
+      display: -webkit-box;
+      display: flex;
+      margin-left: 27%;
+      flex-wrap: wrap;
+  }
+  .title__progress{
+      margin-top: 40px;
+      margin-bottom: -90px;
+      color: #e27900;
+      font-weight: bold;
+  }
+  .title__progress--finish{
+      margin-left: -44px;
+  }
+  .title__progress--payment{
+      margin-left: -20px;
+  }
+  .text__progress{
+      flex-basis: 0;
+      -webkit-box-flex: 1;
+      flex-grow: 0.1;
+      max-width: 100%;
+      z-index: 999;
+      margin-left: 11rem;
+  }
+}
+.wrapper-mains{
+    width: 561px;
+    height: auto;
+    background: white;
+    text-align: center;
+    margin: auto;
+    padding: 100px 47px 20px 61px;
+}
+.textarea{
+    display: block;
+    width: 100%;
+    height: 70px;
+    border-radius: 5px;
+}
 
-:root {
+/* :root {
 	--white: #ffffff;
 	--light: #f0eff3;
 	--black: #000000;
@@ -339,7 +509,7 @@ export default {
 	--red: #da2c4d;
 	--yellow: #f8ab37;
 	--grey: #ecedf3;
-}
+} */
 
 /* #Primary
 ================================================== */
@@ -359,6 +529,22 @@ body{
   position: absolute;
   left: 7px;
 }
+.btn__primary {
+  background: #007bff;
+}
+  .btn__danger{
+  background: #dc3545;
+}
+  .btn__info{
+  background: #17a2b8;
+}
+.btn__dark{
+  background: #666;
+}
+.bloky__form--thank{
+  margin: 5rem 0 5rem 10rem;
+}
+
 
 .p__send{
   font-size: 10px;
@@ -506,11 +692,21 @@ mark{
     text-fill-color: transparent;
     color: transparent;
 }
-
+.back__home{
+  margin-top: 95px;
+}
 .checkbox-tools:not(:checked) + label[data-v-fae5bece]:hover{
   border: 1px solid transparent;
 }
-
+@media screen and (max-width: 599px){
+  .bloky__form--thank{
+      margin: 0px;
+    }
+  .step-progress__step:after {
+    width: 30px;
+    height: 30px;
+    }
+}
 .link-to-page {
 	position: fixed;
     top: 30px;

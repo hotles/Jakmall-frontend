@@ -15,7 +15,7 @@ body
     width: 100%
     max-width: 1200px
     margin: auto
-    position: relative
+    // position: relative
 
 .back
     text-decoration: none
@@ -48,10 +48,10 @@ body
     background: #e27900
   
   .blocky__copy__summary
-    padding-left: 50px;
+    padding-left: 50px
   
   .blocky__copy__summary--total
-    padding-left: 6.6rem;
+    padding-left: 6.6rem
   
   .text__total
     margin-top: 0px
@@ -76,8 +76,9 @@ body
     margin-top: 17px;
   
   .blocky__inner--payment
-    position: absolute
-    bottom: 3vh
+    margin-top: 70px
+  //   position: absolute
+  //   bottom: 3vh
   
   .blocky__title
     color: #FF8A00
@@ -101,10 +102,23 @@ body
 @media screen and (max-width: 599px)
     .container 
         max-width: 480px
+    .blocky, .blocky__checkbox, .blocky__summary
+        grid-column: 1
+    .step-progress__wrapper
+        width: 85%
+    .blocky-wrapper
+        grid-gap: 0px
+    .progressbar
+        padding: 0
+
+
 
 @media screen and (max-width: 979px)
     .container 
         max-width: 600px
+
+
+
 
 @media screen and (max-width: 1200px)
     .container 
