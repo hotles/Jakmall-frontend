@@ -1,0 +1,128 @@
+body 
+    background #fffae6
+
+.blocky 
+    grid-column: 1 / span 2
+
+#app 
+   font-family: Avenir, Helvetica, Arial, sans-serif
+   -webkit-font-smoothing: antialiased
+   -moz-osx-font-smoothing: grayscale
+   color: #2c3e50
+   margin-top: 60px
+
+.container
+    width: 100%
+    max-width: 1200px
+    margin: auto
+    // position: relative
+
+.back
+    text-decoration: none
+    color: #666
+.back:hover
+    color #000
+.blocky__inner--back
+    padding-bottom: 30px
+
+.blocky__estimation
+    margin-top 20px
+.text__success
+    color #1BD97B
+    margin-top 0
+
+.btn
+    padding: 15px
+    width: 100%
+    font-size: 16px
+    color: #fff
+    border: none
+  
+  :focus
+    outline: none
+  
+  .btn__orange
+    background: #FF8A00
+  
+  .btn__orange:hover
+    background: #e27900
+  
+  .blocky__copy__summary
+    padding-left: 50px
+  
+  .blocky__copy__summary--total
+    padding-left: 6.6rem
+  
+  .text__total
+    margin-top: 0px
+  
+  .blocky__summary
+    border-left: 1px solid #ccc
+    padding-left: 15px
+  
+  .blocky__title--summary
+    margin-top: 40px
+    margin-bottom: 12px
+  
+  input[type=text], input[type=email],input[type=number], textarea 
+    width: 100%
+    padding: 12px 20px
+    margin: 8px 0
+    display: inline-block
+    border: 1px solid #ccc
+    box-sizing: border-box
+  
+  .bloky__form__controls--dropshipper
+    margin-top: 17px;
+  
+  .blocky__inner--payment
+    margin-top: 70px
+  //   position: absolute
+  //   bottom: 3vh
+  
+  .blocky__title
+    color: #FF8A00
+  
+  .blocky-wrapper
+    display: grid
+    grid-template-columns: auto auto auto auto
+    grid-gap: 20px
+    background-color: #fff
+    padding: 30px
+  
+  .blocky__title--hr
+    border-bottom: 9px solid #f1f1f1
+  
+  .blocky__inner--checkbox
+    text-align: right
+    margin-top: 40px
+    margin-right: 20px
+
+
+@media screen and (max-width: 599px)
+    .container 
+        max-width: 480px
+    .blocky, .blocky__checkbox, .blocky__summary
+        grid-column: 1
+    .step-progress__wrapper
+        width: 85%
+    .blocky-wrapper
+        grid-gap: 0px
+    .progressbar
+        padding: 0
+
+
+
+@media screen and (max-width: 979px)
+    .container 
+        max-width: 600px
+
+
+
+
+@media screen and (max-width: 1200px)
+    .container 
+        max-width: 980px
+
+
+    

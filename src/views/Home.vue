@@ -1,13 +1,10 @@
 <template>
   <div class="home">
-    <!-- <div class="container__progress"> -->
-      
     <div class="title__steprogress">
       <div class="text__progress"><p class="title__progress">Delivery</p></div>
       <div class="text__progress"><p class="title__progress title__progress--payment">Payment</p></div>
       <div class="text__progress"><p class="title__progress title__progress--finish">Finish</p></div>
       </div>
-    <!-- </div> -->
   <div class="container">
       <div>
         <div class="container__progress">
@@ -181,6 +178,7 @@
                       </div>
                       <div class="bloky__form__group">
                           <div class="bloky__form__controls" id="radioCustom1">
+                            <ValidationProvider name="myform2" rules="required" v-slot="{ errors }">
                               <input class="checkbox-tools" value="e_wallet" type="radio" @click="btnewalet" v-model="pay_name" name="tools1" id="radiopay1">
                               <label class="for-checkbox-tools" for="radiopay1">
                                 <p class="p__send">e-Wallet</p>
@@ -195,7 +193,9 @@
                               <label class="for-checkbox-tools" for="radiopay3">
                                 <p class="p__send">Virtual Account</p>
                                 <p class="p__send--pay"></p>
-                              </label>
+                              </label><br>
+                              <small v-if="errors">{{ errors[0] }}</small>
+                            </ValidationProvider>
                           </div>
                       </div>
                     </form>
@@ -233,9 +233,15 @@
                   </div>
                   <div class="blocky__inner blocky__inner--payment">
                     <div class="blocky__inner--summary">
-                      <p class="blocky__copy">Cost of goodss <strong class="blocky__copy__summary">{{cost_summary}}</strong></p>                
-                      <p class="blocky__copy">Dropshipping Fee <strong class="blocky__copy__summary">{{fee_summary}}</strong></p>
-                      <h3 class="blocky__title blocky__title--summary">Total <strong class="blocky__copy__summary">{{total_summary}}</strong></h3>                
+                      <p class="blocky__copy">Cost of goodss <strong class="blocky__copy__summary">{{ cost_summary }}</strong></p>                
+                      <p class="blocky__copy">Dropshipping Fee <strong class="blocky__copy__summary">{{ fee_summary }}</strong></p>
+                      <p class="blocky__copy" v-if="picked1"><strong>GO-SEND </strong>Shipment <strong class="blocky__copy__summary">{{ pay_go_send }}</strong></p> 
+                      <p class="blocky__copy" v-if="picked2"><strong>JNE </strong>Shipment <strong class="blocky__copy__summary">{{ pay_jne }}</strong></p>
+                      <p class="blocky__copy" v-if="picked3"><strong>Courier </strong>Shipment <strong class="blocky__copy__summary">{{ pay_courier }}</strong></p>
+                      <h3 class="blocky__title blocky__title--summary" v-if="picked1">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_go_send}}</strong></h3>
+                      <h3 class="blocky__title blocky__title--summary" v-else-if="picked2">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_jne}}</strong></h3>
+                      <h3 class="blocky__title blocky__title--summary" v-else-if="picked3">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_courier}}</strong></h3>
+                      <h3 class="blocky__title blocky__title--summary" v-else>Total <strong class="blocky__copy__summary">{{total_summary}}</strong></h3>                
                     </div>
                     <div class="blocky__inner">
                       <button type="submit" class="btn btn__info" v-if="btn1">Payment with E-walet</button>
@@ -259,7 +265,7 @@
                 <form class="bloky__form bloky__form--thank"> 
                   <div class="blocky__inner">
                     <h1 class="blocky__title blocky__title--hr">Thank you</h1>
-                    <p><strong> ID: xxxx </strong></p>
+                    <p><strong> ID: {{orderId}} </strong></p>
                     <p>Your order will be delivered today with
                       <span v-if="picked1" class="text__success">GO-SEND</span>
                       <span v-if="picked2" class="text__success">JNE</span>
@@ -286,9 +292,15 @@
               </div>
               <div class="blocky__inner blocky__inner--payment">
                 <div class="blocky__inner--summary">
-                  <p class="blocky__copy">Cost of goodss <strong class="blocky__copy__summary">{{cost_summary}}</strong></p>                
-                  <p class="blocky__copy">Dropshipping Fee <strong class="blocky__copy__summary">{{fee_summary}}</strong></p>
-                  <h3 class="blocky__title blocky__title--summary">Total <strong class="blocky__copy__summary blocky__copy__summary--total">{{this.total_summary = this.cost_summary + this.fee_summary}}</strong></h3>                
+                  <p class="blocky__copy">Cost of goodss <strong class="blocky__copy__summary">{{ cost_summary }}</strong></p>                
+                  <p class="blocky__copy">Dropshipping Fee <strong class="blocky__copy__summary">{{ fee_summary }}</strong></p>
+                  <p class="blocky__copy" v-if="picked1"><strong>GO-SEND </strong>Shipment <strong class="blocky__copy__summary">{{ pay_go_send }}</strong></p> 
+                  <p class="blocky__copy" v-if="picked2"><strong>JNE </strong>Shipment <strong class="blocky__copy__summary">{{ pay_jne }}</strong></p>
+                  <p class="blocky__copy" v-if="picked3"><strong>Courier </strong>Shipment <strong class="blocky__copy__summary">{{ pay_courier }}</strong></p>
+                  <h3 class="blocky__title blocky__title--summary" v-if="picked1">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_go_send}}</strong></h3>
+                  <h3 class="blocky__title blocky__title--summary" v-else-if="picked2">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_jne}}</strong></h3>
+                  <h3 class="blocky__title blocky__title--summary" v-else-if="picked3">Total <strong class="blocky__copy__summary">{{this.total_summary + this.pay_courier}}</strong></h3>
+                  <h3 class="blocky__title blocky__title--summary" v-else>Total <strong class="blocky__copy__summary">{{total_summary}}</strong></h3>
                 </div>
               </div>
             </div>
@@ -312,10 +324,11 @@ export default {
   components: {
     VuePhoneNumberInput,
     StepProgress
-
   },
+
   data: function () {
     return {
+      orderId         : '',
       step1           : true,
       step2           : false,
       step3           : false,
@@ -339,29 +352,18 @@ export default {
       btn2            : false,
       btn3            : false,
       pay_name        : '',
-      pay_go_send     : '15,000',
-      pay_jne         : '9,000',
-      pay_courier     : '29,000',
+      pay_go_send     : 15000,
+      pay_jne         : 9000,
+      pay_courier     : 29000,
     }
+  },
+  created() {
+    this.generateID();
   },
   methods: {
     charCount : function(){
       this.totalcharacter = this.maxcharacter - this.formdata.delivery_addres.length
     },
-    // async submit() {
-    //   const valid = await this.$refs.observer.validate();
-    //   if (valid) {
-    //     this.savePreferDate();
-    //     console.log("Form is valid");
-    //   } else {
-    //     // this.$swal.fire({
-    //     //   icon: "error",
-    //     //   title: "Sorry",
-    //     //   text: "Please select Send as dropshipper"
-    //     // });
-    //     console.log("Form is invalid");
-    //   }
-    // },
     async submit(){
       const valid = await this.$refs.observer.validate();
       if (valid) {
@@ -372,7 +374,6 @@ export default {
         }
     },
     savePreferDate(){
-      // this.stepno++;
       this.step2 = true;
       this.step1 = false;
       this.step3 = false;
@@ -385,39 +386,40 @@ export default {
         text: " aw aw aw!!! please select your payment"
       });
     },
-    //  validateForm() {
-    //   const check = this.$refs.observer.validate();
-    //   if (check == true) {
-    //     this.savePreferCustom();
-    //     console.log("Form is valid");
-    //   } else {
-    //     // this.$swal.fire({
-    //     //   icon: "error",
-    //     //   title: "Sorry",
-    //     //   text: "Please select Send as dropshipper"
-    //     // });
-    //     console.log("Form is invalid");
-    //   }
-    // },
     async validateForm() {
       const valids = await this.$refs.observer.validate();
         if (valids) {
-          this.savePreferCustom();
+          this.savePreferPayment();
           console.log("Form is valid");
           } else {
             console.log("Form is invalid");
           }
     },
-    savePreferCustom(){
-      // this.stepno++;
+    generateID(){
+      let regex = "abcdefghjklmnpqrstuvwxyz23456789";
+        for (let i=0; i <= 5; i++) {
+        this.orderId += regex.charAt(
+          Math.floor(Math.random() * regex.length)
+        );
+      }
+    this.orderId = this.orderId.toUpperCase();
+    },
+    // generatenum(demo){
+    //   this.demo = this.num.idrandom;
+    // },
+    savePreferPayment(){
       this.step2 = false;
       this.step1 = false;
       this.step3 = true;
       this.stepno = 3;
     },
     goBack: function(){
+      this.step2 = false;
+      this.step1 = true;
+      this.step3 = false;
+      this.stepno = 1;
       window.history.back();
-      this.stepno--;
+
     },
     goBackhome(){
       window.location.href = '/';
@@ -457,68 +459,28 @@ export default {
 </script>
 <style scoped>
 /* ❤  */
-@media screen and (min-width: 979px){
-  .title__steprogress{
-      display: -webkit-box;
-      display: flex;
-      margin-left: 27%;
-      flex-wrap: wrap;
-  }
-  .title__progress{
-      margin-top: 40px;
-      margin-bottom: -90px;
-      color: #e27900;
-      font-weight: bold;
-  }
-  .title__progress--finish{
-      margin-left: -44px;
-  }
-  .title__progress--payment{
-      margin-left: -20px;
-  }
-  .text__progress{
-      flex-basis: 0;
-      -webkit-box-flex: 1;
-      flex-grow: 0.1;
-      max-width: 100%;
-      z-index: 999;
-      margin-left: 11rem;
-  }
-}
+
 .wrapper-mains{
-    width: 561px;
-    height: auto;
-    background: white;
-    text-align: center;
-    margin: auto;
-    padding: 100px 47px 20px 61px;
+  width: 561px;
+  height: auto;
+  background: white;
+  text-align: center;
+  margin: auto;
+  padding: 100px 47px 20px 61px;
 }
 .textarea{
-    display: block;
-    width: 100%;
-    height: 70px;
-    border-radius: 5px;
+  display: block;
+  width: 100%;
+  height: 70px;
+  border-radius: 5px;
 }
 
-/* :root {
-	--white: #ffffff;
-	--light: #f0eff3;
-	--black: #000000;
-	--dark-blue: #1f2029;
-	--dark-light: #353746;
-	--red: #da2c4d;
-	--yellow: #f8ab37;
-	--grey: #ecedf3;
-} */
-
-/* #Primary
-================================================== */
 
 body{
 	width: 100%;
 	background: var(--dark-blue);
 	overflow-x: hidden;
-    font-family: 'Poppins', sans-serif;
+  font-family: 'Poppins', sans-serif;
 	font-size: 17px;
 	line-height: 30px;
 	-webkit-transition: all 300ms linear;
@@ -578,7 +540,6 @@ mark{
 .z-bigger {
     z-index: 100 !important;
 }
-
 
 .background-color{
 	position: fixed;
@@ -687,10 +648,10 @@ mark{
 	-webkit-transition: all 300ms linear;
 	transition: all 300ms linear; 
 	-webkit-text-stroke: 1px var(--white);
-    text-stroke: 1px var(--white);
-    -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
-    color: transparent;
+  text-stroke: 1px var(--white);
+  -webkit-text-fill-color: transparent;
+  text-fill-color: transparent;
+  color: transparent;
 }
 .back__home{
   margin-top: 95px;
@@ -698,26 +659,71 @@ mark{
 .checkbox-tools:not(:checked) + label[data-v-fae5bece]:hover{
   border: 1px solid transparent;
 }
-@media screen and (max-width: 599px){
-  .bloky__form--thank{
-      margin: 0px;
-    }
-  .step-progress__step:after {
-    width: 30px;
-    height: 30px;
-    }
-}
+
 .link-to-page {
-	position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 20000;
-    cursor: pointer;
-    width: 50px;
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  z-index: 20000;
+  cursor: pointer;
+  width: 50px;
 }
 .link-to-page img{
 	width: 100%;
 	height: auto;
 	display: block;
 }
+
+/* only mobile */
+
+@media screen and (max-width: 599px){
+  .bloky__form--thank{
+      margin: 0px;
+    }
+  .step-progress__step:after {
+      width: 30px;
+      height: 30px;
+    }
+    .blocky__copy__summary {
+      position: absolute;
+      right: 50px;
+}
+}
+
+
+/* tablet and dekstop */
+
+@media screen and (min-width: 979px){
+  .title__steprogress{
+      display: -webkit-box;
+      display: flex;
+      margin-left: 27%;
+      flex-wrap: wrap;
+  }
+  .blocky__copy__summary{
+      position: absolute;
+      right: 230px;
+  }
+  .title__progress{
+      margin-top: 40px;
+      margin-bottom: -90px;
+      color: #e27900;
+      font-weight: bold;
+  }
+  .title__progress--finish{
+      margin-left: -44px;
+  }
+  .title__progress--payment{
+      margin-left: -20px;
+  }
+  .text__progress{
+      flex-basis: 0;
+      -webkit-box-flex: 1;
+      flex-grow: 0.1;
+      max-width: 100%;
+      z-index: 999;
+      margin-left: 11rem;
+  }
+}
+
 </style>
