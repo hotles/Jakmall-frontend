@@ -1,6 +1,6 @@
 # jakmall-fe-hotles
 ```
-Test Frontend Hotles Purba
+Step Progress Registration
 ```
 
 ## Project setup
